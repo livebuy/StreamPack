@@ -112,6 +112,16 @@ class FullFrameRect(var program: Texture2DProgram) {
         GLES20.glViewport(0, 0, resolution.width, resolution.height)
     }
 
+    private var isMirrored = false
+    fun setIsMirrored(targetState: Boolean) {
+        if (isMirrored != targetState) {
+            // if they are different, run scaleM once to flip the -1 on the x axis
+            Matrix.scaleM(mvpMatrix, 0, -1f, 1f, 1f)
+        }
+        isMirrored = targetState
+    }
+
+
     /**
      * Draws a viewport-filling rect, texturing it with the specified texture object.
      */

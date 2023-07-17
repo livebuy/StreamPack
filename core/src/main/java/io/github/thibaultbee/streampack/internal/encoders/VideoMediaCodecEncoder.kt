@@ -29,6 +29,8 @@ import io.github.thibaultbee.streampack.internal.gl.EGlSurface
 import io.github.thibaultbee.streampack.internal.gl.FullFrameRect
 import io.github.thibaultbee.streampack.internal.gl.Texture2DProgram
 import io.github.thibaultbee.streampack.internal.interfaces.IOrientationProvider
+import io.github.thibaultbee.streampack.listeners.CameraEventBridge
+import io.github.thibaultbee.streampack.listeners.OnCameraListener
 import io.github.thibaultbee.streampack.listeners.OnErrorListener
 import java.util.concurrent.Executors
 
@@ -109,7 +111,7 @@ class VideoMediaCodecEncoder(
     class CodecSurface(
         private val orientationProvider: IOrientationProvider
     ) :
-        SurfaceTexture.OnFrameAvailableListener {
+        SurfaceTexture.OnFrameAvailableListener, OnCameraListener {
         private var eglSurface: EGlSurface? = null
         private var fullFrameRect: FullFrameRect? = null
         private var textureId = -1
@@ -121,6 +123,8 @@ class VideoMediaCodecEncoder(
 
         var surface: Surface? = null
             set(value) {
+
+                CameraEventBridge.listener = this
 
                 /**
                  * When surface is called twice without the stopStream(). When configure() is
@@ -235,6 +239,10 @@ class VideoMediaCodecEncoder(
             stopStream()
             surfaceTexture?.release()
             surfaceTexture = null
+        }
+
+        override fun onCameraOpened(cameraId: String, isFrontCamera: Boolean) {
+            fullFrameRect?.setIsMirrored(isFrontCamera)
         }
     }
 }

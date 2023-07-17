@@ -83,14 +83,6 @@ abstract class MediaCodecEncoder<T : Config>(
 
                             // Remove startCode + sps + startCode + pps
                             var frameBuffer = buffer
-                            if (isFrontCamera) {
-                                val flippedBuffer = ByteBuffer.allocate(frameBuffer.remaining())
-                                for (i in frameBuffer.remaining() - 1 downTo 0) {
-                                    flippedBuffer.put(frameBuffer[i])
-                                }
-                                flippedBuffer.flip()
-                                frameBuffer = flippedBuffer
-                            }   
                             extra?.let { it ->
                                 var prefix = ByteArray(0)
                                 it.forEach { csd -> prefix = prefix.plus(csd.extractArray()) }
