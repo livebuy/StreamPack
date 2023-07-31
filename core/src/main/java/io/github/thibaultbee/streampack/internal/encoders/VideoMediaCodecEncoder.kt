@@ -112,6 +112,7 @@ class VideoMediaCodecEncoder(
         private val orientationProvider: IOrientationProvider
     ) :
         SurfaceTexture.OnFrameAvailableListener, OnCameraListener {
+        private var isFrontCamera = false
         private var eglSurface: EGlSurface? = null
         private var fullFrameRect: FullFrameRect? = null
         private var textureId = -1
@@ -152,7 +153,8 @@ class VideoMediaCodecEncoder(
                     textureId = createTextureObject()
                     setMVPMatrixAndViewPort(
                         orientationProvider.orientation.toFloat(),
-                        Size(width, height)
+                        Size(width, height),
+                        isFrontCamera,
                     )
                 }
 
@@ -242,6 +244,7 @@ class VideoMediaCodecEncoder(
         }
 
         override fun onCameraOpened(cameraId: String, isFrontCamera: Boolean) {
+            this.isFrontCamera = isFrontCamera
             fullFrameRect?.setIsMirrored(isFrontCamera)
         }
     }
