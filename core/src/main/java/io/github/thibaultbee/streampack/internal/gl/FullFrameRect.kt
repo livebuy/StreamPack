@@ -110,6 +110,11 @@ class FullFrameRect(var program: Texture2DProgram) {
             rotation, 0f, 0f, -1f
         )
         GLES20.glViewport(0, 0, resolution.width, resolution.height)
+        // since the matrix was reset above, we need re-apply the mirror transformation
+        if (isMirrored) {
+            // if video was mirrored before, flip the matrix
+            Matrix.scaleM(mvpMatrix, 0, -1f, 1f, 1f)
+        }
     }
 
     private var isMirrored = false
