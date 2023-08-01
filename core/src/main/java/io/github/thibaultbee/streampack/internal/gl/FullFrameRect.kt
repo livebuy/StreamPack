@@ -121,6 +121,7 @@ class FullFrameRect(var program: Texture2DProgram) {
 
     fun setIsMirrored(targetState: Boolean) {
         if (isMirrored != targetState) {
+            println("is mirrored in setIsMirrored $isMirrored")
             // if they are different, run scaleM once to flip the -1 on the x axis
             Matrix.scaleM(mvpMatrix, 0, -1f, 1f, 1f)
         }

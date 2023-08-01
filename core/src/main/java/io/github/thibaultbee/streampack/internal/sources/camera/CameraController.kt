@@ -81,6 +81,7 @@ class CameraController(
     ) : CameraDevice.StateCallback() {
 
         override fun onOpened(device: CameraDevice) {
+            println("running onOpened, device is $device")
             cont.resume(device)
             CameraEventBridge.cameraOpened(device.id, context.isFrontCamera(device.id))
         }

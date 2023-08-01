@@ -22,6 +22,7 @@ object CameraEventBridge {
     var listener: OnCameraListener? = null
 
     fun cameraOpened(cameraId: String, isFrontCamera: Boolean) {
+        println("running cameraOpened from cameraEventBridge, is front camera $isFrontCamera")
         listener?.onCameraOpened(cameraId, isFrontCamera)
     }
 }
