@@ -3,8 +3,8 @@ apply plugin: 'org.jetbrains.dokka'
 buildscript {
     ext {
         // Upgrade StreamPack version here
-        streampackCode = 2_005_005
-        streampackVersion = '2.5.5'
+        streampackCode = 2_005_007
+        streampackVersion = '2.5.7'
 
         minSdk = 21
         compileSdk = 31

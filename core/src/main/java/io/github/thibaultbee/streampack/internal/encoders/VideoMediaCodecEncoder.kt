@@ -245,6 +245,7 @@ class VideoMediaCodecEncoder(
 
         override fun onCameraOpened(cameraId: String, isFrontCamera: Boolean) {
             this.isFrontCamera = isFrontCamera
+            println("LB: isFrontCamera camera opened $isFrontCamera")
             fullFrameRect?.setIsMirrored(isFrontCamera)
         }
     }
