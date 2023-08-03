@@ -25,8 +25,10 @@ import android.util.Range
 import android.view.Surface
 import androidx.annotation.RequiresPermission
 import io.github.thibaultbee.streampack.error.CameraError
+import io.github.thibaultbee.streampack.listeners.CameraEventBridge
 import io.github.thibaultbee.streampack.logger.Logger
 import io.github.thibaultbee.streampack.utils.TAG
+import io.github.thibaultbee.streampack.utils.isFrontCamera
 import kotlinx.coroutines.*
 import java.security.InvalidParameterException
 import kotlin.coroutines.resume
@@ -75,8 +77,13 @@ class CameraController(
 
     private class CameraDeviceCallback(
         private val cont: CancellableContinuation<CameraDevice>,
+        private val context: Context,
     ) : CameraDevice.StateCallback() {
-        override fun onOpened(device: CameraDevice) = cont.resume(device)
+
+        override fun onOpened(device: CameraDevice) {
+            cont.resume(device)
+            CameraEventBridge.cameraOpened(device.id, context.isFrontCamera(device.id))
+        }
 
         override fun onDisconnected(camera: CameraDevice) {
             Logger.w(TAG, "Camera ${camera.id} has been disconnected")
@@ -127,7 +134,7 @@ class CameraController(
         threadManager.openCamera(
             manager,
             cameraId,
-            CameraDeviceCallback(cont)
+            CameraDeviceCallback(cont, context)
         )
     }
 

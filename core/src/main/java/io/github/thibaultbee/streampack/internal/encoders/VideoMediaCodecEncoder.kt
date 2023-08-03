@@ -29,6 +29,8 @@ import io.github.thibaultbee.streampack.internal.gl.FullFrameRect
 import io.github.thibaultbee.streampack.internal.gl.Texture2DProgram
 import io.github.thibaultbee.streampack.internal.utils.getDeviceOrientation
 import io.github.thibaultbee.streampack.internal.utils.isDevicePortrait
+import io.github.thibaultbee.streampack.listeners.CameraEventBridge
+import io.github.thibaultbee.streampack.listeners.OnCameraListener
 import io.github.thibaultbee.streampack.listeners.OnErrorListener
 import java.util.concurrent.Executors
 
@@ -98,7 +100,8 @@ class VideoMediaCodecEncoder(
         get() = codecSurface?.inputSurface
 
     class CodecSurface(private val context: Context, private val manageVideoOrientation: Boolean) :
-        SurfaceTexture.OnFrameAvailableListener {
+        SurfaceTexture.OnFrameAvailableListener, OnCameraListener {
+        private var isFrontCamera = false
         private var eglSurface: EGlSurface? = null
         private var fullFrameRect: FullFrameRect? = null
         private var textureId = -1
@@ -110,6 +113,8 @@ class VideoMediaCodecEncoder(
 
         var surface: Surface? = null
             set(value) {
+
+                CameraEventBridge.listener = this
 
                 /**
                  * When surface is called twice without the stopStream(). When configure() is
@@ -137,7 +142,8 @@ class VideoMediaCodecEncoder(
                     textureId = createTextureObject()
                     setMVPMatrixAndViewPort(
                         context.getDeviceOrientation().toFloat(),
-                        Size(width, height)
+                        Size(width, height),
+                        isFrontCamera,
                     )
                 }
 
@@ -232,6 +238,12 @@ class VideoMediaCodecEncoder(
             stopStream()
             surfaceTexture?.release()
             surfaceTexture = null
+        }
+
+        override fun onCameraOpened(cameraId: String, isFrontCamera: Boolean) {
+            this.isFrontCamera = isFrontCamera
+            println("LB: isFrontCamera camera opened $isFrontCamera")
+            fullFrameRect?.setIsMirrored(isFrontCamera)
         }
     }
 }
