@@ -112,20 +112,16 @@ class FullFrameRect(var program: Texture2DProgram) {
             if (rotation == 0F) 270F else rotation - 90, 0f, 0f, -1f
         )
         GLES20.glViewport(0, 0, resolution.width, resolution.height)
-        println("LB: isFrontCamera $isFrontCamera")
 
         // reset mirroring (don't call setIsMirrored here)
         isMirrored = isFrontCamera
-        println("LB: isMirrored in matrix $isMirrored")
         if (isMirrored) {
             Matrix.scaleM(mvpMatrix, 0, -1f, 1f, 1f)
         }
     }
 
     fun setIsMirrored(targetState: Boolean) {
-        println("LB: setting is mirrored")
         if (isMirrored != targetState) {
-            println("LB: isMirrored $isMirrored")
             // if they are different, run scaleM once to flip the -1 on the x axis
             Matrix.scaleM(mvpMatrix, 0, -1f, 1f, 1f)
         }
